@@ -1,4 +1,14 @@
-[2024-07-13 23:20:53.283540] [INFO] Initializing screen size [ (800, 600) ]
-[2024-07-13 23:20:53.284040] [INFO] Creating Engine Folder
-[2024-07-13 23:20:53.284541] [WARN] No Icon Found
-[2024-07-13 23:20:53.310148] [INFO] Loading Image: map
+[2024-07-13 23:48:44.076811] [INFO] Initializing screen size [ (800, 600) ]
+[2024-07-13 23:48:44.077312] [INFO] Creating Engine Folder
+[2024-07-13 23:48:44.077812] [INFO] Loading Image: logo.png
+[2024-07-13 23:48:45.298459] [INFO] Loading Image: map
+[2024-07-13 23:48:45.307983] [INFO] Loading Image: heart
+[2024-07-13 23:48:45.308984] [INFO] Loading Image: skull
+[2024-07-13 23:48:45.309484] [INFO] Loading Image: coin
+[2024-07-13 23:48:45.321026] [INFO] Playeing Random song [ song1 ]
+[2024-07-13 23:48:47.137208] [INFO] Loading Image: turret_base
+[2024-07-13 23:48:47.137708] [INFO] Loading Image: turret_top_0
+[2024-07-13 23:48:55.544963] [INFO] Loading Image: turret_top_1
+[2024-07-13 23:48:55.545464] [INFO] Loading Image: turret_top_1
+[2024-07-13 23:50:12.651029] [INFO] Loading Image: turret_base
+[2024-07-13 23:50:12.651529] [INFO] Loading Image: turret_top_0
