@@ -112,6 +112,8 @@ def main():
 
     Player_Class = User()
     
+    logoImage = engine.Image().LoadIcon("logo.png")
+    
     
 
     MESSAGE = None
@@ -165,7 +167,6 @@ def main():
     musicClass = engine.Sound()
     
     
-    towers.append(game.Missile(200,200,0))
     
 
     while running:
@@ -355,9 +356,11 @@ def main():
             appendedMoney.pop(0)
             
         UI.draw(SCREEN)
+        SCREEN.blit(logoImage, (SCREEN_WIDTH-50,SCREEN_HEIGHT-50))
         
         pygame.display.update()
         ticks += 1
+        
         
         musicClass.PlayMusicRandom(0.1)
         clock.tick(FPS)
@@ -405,7 +408,7 @@ def run():
 
     # Screen setup
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Your Professional Loading Menu")
+    pygame.display.set_caption("Your Average Loading Menu")
 
     # Font setup
     font = pygame.font.Font(None, FONT_SIZE)
