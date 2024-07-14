@@ -296,3 +296,28 @@ class Sound:
 #    text_surface = font.render(text, True, TEXT_COLOR)
 #    text_rect = text_surface.get_rect(center=rect.center)
 #    screen.blit(text_surface, text_rect)
+
+
+
+#
+#    class Bullet:
+#        def __init__(self, x, y, target, damage):
+#            self.x = x
+#            self.y = y
+#            self.position = (x,y)
+#            self.target = target
+#            self.damage = damage
+#            self.speed = 5
+#    
+#        def move(self):
+#            target_x, target_y = self.target.x, self.target.y
+#            dx, dy = target_x - self.x, target_y - self.y
+#            dist = math.sqrt(dx ** 2 + dy ** 2)
+#            if dist != 0:
+#                self.x += self.speed * dx / dist
+#                self.y += self.speed * dy / dist
+#    
+#        def draw(self, screen):
+#            pygame.draw.circle(screen, COLOR.BLACK, (int(self.x), int(self.y)), 5)
+#            
+#
