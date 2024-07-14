@@ -2,7 +2,7 @@ import pygame, time, math, datetime, os, sys, random
 
 pygame.font.init()
 
-version = "1.4.2"
+version = "1.4.3"
 
 
 class COLOR:
@@ -58,6 +58,7 @@ def __init__(screen_size: tuple):
     _SCREEN_HEIGHT, _SCREEN_WIDTH = _SCREEN_SIZE
     
     print(f"OBEngine {version}")
+    print(f"https://github.com/OusmBlueNinja/OBEngine")
     
     logger.log(f"Initializing screen size [ {screen_size} ]")
     
