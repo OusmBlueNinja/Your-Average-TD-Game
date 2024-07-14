@@ -1,0 +1,24 @@
+[2024-07-13 22:57:44.003848] [INFO] Initializing screen size [ (800, 600) ]
+[2024-07-13 22:57:44.003848] [INFO] Creating Engine Folder
+[2024-07-13 22:57:44.004846] [INFO] Loading Image: logo.png
+[2024-07-13 22:57:44.030500] [INFO] Loading Image: map
+[2024-07-13 22:57:44.043584] [INFO] Loading Image: heart
+[2024-07-13 22:57:44.044092] [INFO] Loading Image: skull
+[2024-07-13 22:57:44.044589] [INFO] Loading Image: coin
+[2024-07-13 22:57:44.060771] [INFO] Playeing Random song [ song1 ]
+[2024-07-13 22:57:45.385691] [INFO] Loading Image: turret_base
+[2024-07-13 22:57:45.386192] [INFO] Loading Image: turret_top_0
+[2024-07-13 22:57:54.882096] [INFO] Loading Image: turret_base
+[2024-07-13 22:57:54.882602] [INFO] Loading Image: turret_top_0
+[2024-07-13 22:58:11.148635] [INFO] Loading Image: turret_base
+[2024-07-13 22:58:11.149142] [INFO] Loading Image: turret_top_0
+[2024-07-13 22:58:14.852524] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:14.853025] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:16.449149] [INFO] Loading Image: turret_base
+[2024-07-13 22:58:16.449649] [INFO] Loading Image: turret_top_0
+[2024-07-13 22:58:16.759393] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:16.759893] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:17.441987] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:17.442486] [INFO] Loading Image: turret_top_1
+[2024-07-13 22:58:35.384582] [INFO] Loading Image: turret_top_2
+[2024-07-13 22:58:35.385082] [INFO] Loading Image: turret_top_1
