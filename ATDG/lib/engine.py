@@ -79,16 +79,17 @@ def __init__(screen_size: tuple):
 
 
 
-font_Calibri = pygame.font.SysFont("Calibri", 36)
+
 
 class FlashMessage:
     def __init__(self, screen, message, duration=2.5):
+        self.font = pygame.font.SysFont("Contage", 36)
         self.screen = screen
         self.message = message
         self.duration = duration
         self.start_time = None
         self.active = False
-        self.text_surface = font_Calibri.render(self.message, True, COLOR.BLACK)
+        self.text_surface = self.font.render(self.message, True, COLOR.BLACK)
         self.text_rect = self.text_surface.get_rect(center=(_SCREEN_WIDTH / 2, _SCREEN_HEIGHT / 2))
 
     def start(self) -> None:
@@ -102,7 +103,7 @@ class FlashMessage:
             self.active = False
         
 def draw_text_center(screen, message: str, position: tuple, size:int) -> None:
-    font_Calibri = pygame.font.SysFont("Calibri", size)
+    font_Calibri = pygame.font.SysFont("Contage", size)
     text_surface = font_Calibri.render(message, True, COLOR.BLACK)
     text_rect = text_surface.get_rect(center=position)
     screen.blit(text_surface, text_rect)
@@ -188,6 +189,7 @@ class Particle:
     
 class Math:
     def __init__(self):
+        super().__init__()
         pass
     @staticmethod
     def lerp(self, a, b, t):
@@ -213,9 +215,30 @@ class Image:
             logger.error(("Error:", message))
             return None
         
+    def LoadAnimation(self, ImageNames: list[str]) -> list[pygame.Surface]:
+        """Load an animation from a list of image files"""
+        images = []
+        
+        logger.log(f"Loading Animation Frames: %s" % ImageNames)
+        for ImageName in ImageNames:
+            try:
+                images.append(pygame.image.load(f"./assets/images/{ImageName}.png"))
+            except pygame.error as message:
+                logger.error(("Unable to load icon:", ImageName))
+                logger.error(("Error:", message))
+                return None
+        return images
+    
+    
+    ## TODO
+    # add a animation sheet loader and splicer
+        
+        
     # Todo: 
     # Add support for other image formats like JPG, GIF, and BMP
     # Add Animation, and Animation Player
+    
+
         
         
 def get_angle(point1: tuple, point2:tuple) -> float:
@@ -286,6 +309,9 @@ class Sound:
             self.current_sound.play()
         except pygame.error as e:
             logger.error(f"Error playing random music: {e}")
+            
+            
+
         
     
 # TODO:
@@ -321,3 +347,124 @@ class Sound:
 #            pygame.draw.circle(screen, COLOR.BLACK, (int(self.x), int(self.y)), 5)
 #            
 #
+
+
+class UI:
+    def __init__(self):
+        pygame.font.init()
+        self.scroll_areas = []
+
+    def new_scroll_area(self, position=(50, 50), size=(200, 300), backround_color=(50,50,50), texture=None):
+        scroll_area = self.ScrollArea(position, size, backround_color, texture)
+        self.scroll_areas.append(scroll_area)
+        return scroll_area
+
+    def draw(self, surface):
+        for scroll_area in self.scroll_areas:
+            scroll_area.draw(surface)
+
+    def handle_event(self, event):
+        
+        for scroll_area in self.scroll_areas:
+            scroll_area.handle_event(event)
+            
+
+    class ScrollArea:
+        def __init__(self, position, size, backround_color, texture= None):
+            self.texture = texture
+            if texture:
+                self.texture = pygame.transform.scale(texture, size)
+            self.position = position
+            self.size = size
+            self.backround_color = backround_color
+            self.buttons = []
+            self.scroll_offset = 0
+            self.surface = pygame.Surface(size)
+            self.rect = pygame.Rect(position, size)
+            self.font = pygame.font.SysFont("Contage", 36)
+
+        def new_button(self, text="Button", callback=None, colums=1, texture=None):
+            button_position = (0, len(self.buttons) * 50)
+            button_size = (self.size[0], 50)
+            button = UI.Button(text, button_position, button_size, callback, texture=texture)
+            self.buttons.append(button)
+            return button
+
+        def draw(self, surface):
+            # Fill the scroll area surface with the background color or texture
+            if not self.texture:
+                self.surface.fill(self.background_color)
+            else:
+                self.surface.blit(self.texture, (0, 0))
+
+            # Draw buttons with proper scrolling
+            for index, button in enumerate(self.buttons):
+                button.rect.y = button.position[1] - self.scroll_offset + (index *5)
+                if 0 <= button.rect.y < self.size[1]:
+                    button.draw(self.surface)
+
+            # Blit the scroll area surface onto the main surface
+            surface.blit(self.surface, self.position)
+
+        def handle_event(self, event):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.rect.collidepoint(event.pos):
+                    for button in self.buttons:
+                        button.handle_event(event, self.position, self.scroll_offset)
+            elif event.type == pygame.MOUSEWHEEL:
+                self.scroll_offset -= event.y * 10
+                self.scroll_offset = max(0, min(self.scroll_offset, len(self.buttons) * 50 - self.size[1]))
+            
+
+    class Button:
+        def __init__(self, text, position, size, callback=None, color=(100,100,100), texture=None, selected_texture = None, selected_color = (150,150,150)):
+            self.texture = texture
+            self.selected_texture = selected_texture
+            
+            
+            if texture:
+                self.surface = pygame.transform.scale(texture, size)
+            if selected_texture:
+                self.sellected_surface = pygame.transform.scale(selected_texture, size)
+            
+            
+            self.surface = pygame.Surface(size)
+            self.sellected_surface = pygame.Surface(size)
+            self.text = text
+            self.position = position
+            self.size = size
+            self.callback = callback
+            self.rect = pygame.Rect(position, size)
+            self.font = pygame.font.SysFont("Contage", 36)
+            self.color = (100, 100, 100)
+            self.selected_color = selected_color
+            self.selected = False
+            
+            
+
+        def draw(self, surface):
+            if self.texture:
+                surface.blit(self.texture, self.texture.get_rect(center=self.rect.center))
+                
+            else:
+                
+                pygame.draw.rect(surface, self.color, self.rect)
+            if self.text and self.text != "": 
+                text_surface = self.font.render(self.text, True, (255, 255, 255))
+            
+                text_rect = text_surface.get_rect(center=self.rect.center)
+                surface.blit(text_surface, text_rect)
+
+        def handle_event(self, event, scroll_area_position, scroll_offset):
+            # Adjust the event position to the scroll area's position and scroll offset
+            adjusted_pos = (event.pos[0] - scroll_area_position[0], event.pos[1] - scroll_area_position[1] + scroll_offset)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.rect.collidepoint(adjusted_pos):
+                if self.callback:
+                    self.callback()
+                    
+        def toggle_sellected(self):
+            """Toggles the Button sellected state"""
+            self.selected = not self.selected
+            
+
+                

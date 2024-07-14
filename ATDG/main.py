@@ -11,15 +11,20 @@ from lib.engine import COLOR
 from lib.config import *
 from lib.user import User
 
-SCREEN_WIDTH = 800
+SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
+MapSize = (800,600)
+
+WOOD_BROWN = (97, 54, 19)
+
+Turet_Type = 1
 
 
 
 # Initialize Pygame
 
-engine.__init__((SCREEN_WIDTH,SCREEN_HEIGHT))
+
 
 
 
@@ -93,6 +98,12 @@ def find_path(tile_map, tile_size) -> list[tuple[int, int]]:
 
 # Game loop
 def main():
+    
+    engine.__init__((SCREEN_WIDTH,SCREEN_HEIGHT))
+    
+    UI = engine.UI()
+    scroll_size = (200,SCREEN_HEIGHT)
+    scroll_area = UI.new_scroll_area(position=((SCREEN_WIDTH - scroll_size[0]), 0), size=scroll_size, backround_color=WOOD_BROWN ,texture=engine.Image().LoadImage("menu_backround"))
     global DEBUG
     # Screen dimensions
     pygame.init()
@@ -100,10 +111,29 @@ def main():
     pygame.display.set_caption("Your Average Tower Defence Game")
 
     Player_Class = User()
+    
+    
 
     MESSAGE = None
 
     GUIdebug = engine.GUIdebug(SCREEN)
+    
+    
+    
+    def set_sellect_turret(id):
+        global Turet_Type
+        Turet_Type = id
+        
+    
+    
+    
+    scroll_area.new_button("Turret", lambda: set_sellect_turret(1), texture=engine.Image().LoadImage("wood_button"))
+    scroll_area.new_button("Missle", lambda: set_sellect_turret(2), texture=engine.Image().LoadImage("wood_button"))
+    scroll_area.new_button("Button 3", lambda: set_sellect_turret(3), texture=engine.Image().LoadImage("wood_button"))
+    scroll_area.new_button("Button 4", lambda: set_sellect_turret(4), texture=engine.Image().LoadImage("wood_button"))
+    scroll_area.new_button("Button 5", lambda: set_sellect_turret(5), texture=engine.Image().LoadImage("wood_button"))
+    
+    
 
 
 
@@ -134,6 +164,9 @@ def main():
     
     musicClass = engine.Sound()
     
+    
+    towers.append(game.Missile(200,200,0))
+    
 
     while running:
         
@@ -152,6 +185,7 @@ def main():
 
         for tower in towers:
             tower.draw(SCREEN)
+            tower.update()
             if DEBUG:
                 mouse_pos = engine.get_mouse_pos()
                 GUIdebug.drawDebugText(str(tower.kills), Text=f"Kills {tower.id}")
@@ -166,6 +200,12 @@ def main():
         for bullet in bullets[:]:
             bullet.move()
             bullet.draw(SCREEN)
+            
+            if bullet.target.Targeted:
+                if bullet.target.health >= bullet.damage+1:
+                    bullet.target.Targeted = False
+                    
+            
             if math.sqrt((bullet.target.position[0] - bullet.x) ** 2 + (bullet.target.position[1] - bullet.y) ** 2) < 10:
                 bullet.target.health -= bullet.damage
                 if bullet.target.health <= 0:
@@ -174,6 +214,7 @@ def main():
                             Player_Class.kills += 1
                             tower.kills += 1
                             break
+                
                 bullets.remove(bullet)
             
             
@@ -181,7 +222,7 @@ def main():
         for enemy in enemies:
             
             if enemy.done:
-                Player_Class.health -= enemy.max_health
+                Player_Class.health -= enemy.health
                 
                 enemies.remove(enemy)
                 for _ in range(20):  # Example number of particles
@@ -195,6 +236,7 @@ def main():
                 
                 
             enemy.move()
+            
             enemy.draw(SCREEN)
             if enemy.x > SCREEN_WIDTH:
                 enemies.remove(enemy)
@@ -215,6 +257,8 @@ def main():
 
         # Handle events
         for event in pygame.event.get():
+            UI.handle_event(event)
+            
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -231,9 +275,8 @@ def main():
                             
                             canPlace = False
                             if Player_Class.money >= tower.get_next_level_price() and tower.can_upgrade():
-                                tower.upgrade(Player_Class.money)
+                                tower.upgrade(Player_Class)
                                 break
-                    
                     if is_on_path(mouse_x, mouse_y):
                         continue
                     if Player_Class.money <= 100: # Tower Cost
@@ -245,7 +288,18 @@ def main():
                         continue
                     
                     Player_Class.money -= 100
-                    towers.append(game.Tower(mouse_x, mouse_y, len(towers)))
+                    if Turet_Type == 1:
+                        towers.append(game.Tower(mouse_x, mouse_y, len(towers)))
+                    elif Turet_Type == 2:        
+                        towers.append(game.Missile(mouse_x, mouse_y, len(towers)))
+                            
+                            #towers.append(game.Cannon(mouse_x, mouse_y, len(towers)))
+                            
+                            #towers.append(game.FlameThrower(mouse_x, mouse_y, len(towers)))
+                            
+                            #towers.append(game.Laser(mouse_x, mouse_y, len(towers)))
+                            
+                    #towers.append(game.Tower(mouse_x, mouse_y, len(towers)))
                     engine.Sound().PlayFX("turret_place")
                 else:
                     down = False
@@ -257,6 +311,8 @@ def main():
                     DEBUG = not DEBUG
         else:
             down = False
+            
+        
         
         for particle in particles[:]:
             particle.update()
@@ -268,12 +324,22 @@ def main():
             MESSAGE.update()
         except:
             pass
+        #print(Turet_Type)
+        
+        
         if DEBUG:
             GUIdebug.NewFrame()
             GUIdebug.drawDebugText("DEBUG MENU", False)
             GUIdebug.drawDebugText(f"{len(enemies)}", Text="Enemies")
             GUIdebug.drawDebugText(str(Player_Class.money), Text="Money")
             GUIdebug.drawDebugText(str(Player_Class.kills), Text="Kills")
+            
+            for tower in towers[:]:
+                engine.draw_text_center(SCREEN, f"lvl:{tower.level}", (tower.position[0], tower.position[1]+30), 25)
+                
+                engine.draw_text_center(SCREEN, f"dmg:{tower.damage}", (tower.position[0], tower.position[1]+45), 25)
+                
+                
             
         else:
             SCREEN.blit(coinImage, (10,10))
@@ -287,6 +353,8 @@ def main():
         for doller in appendedMoney:
             Player_Class.money += doller
             appendedMoney.pop(0)
+            
+        UI.draw(SCREEN)
         
         pygame.display.update()
         ticks += 1
@@ -299,6 +367,9 @@ def main():
 def is_on_path(x, y):
     tile_x = x // TILE_SIZE
     tile_y = y // TILE_SIZE
+    
+    if x >= MapSize[0]:
+        return True
     
     # Check if the calculated indices are within bounds
     if 0 <= tile_y < len(TILE_MAP) and 0 <= tile_x < len(TILE_MAP[0]):
@@ -323,105 +394,92 @@ def lerp(a, b, t):
     return a + (b - a) * t
 def run():
     pygame.init()
-
-    # Constants
+    
     SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
     BUTTON_WIDTH, BUTTON_HEIGHT = 200, 80
     BUTTON_COLOR = (100, 200, 100)
     BUTTON_HOVER_COLOR = (150, 250, 150)
-    TEXT_COLOR = (0, 0, 0)
+    TEXT_COLOR = (255, 255, 255)
     FONT_SIZE = 36
+    FPS = 60
 
     # Screen setup
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Your Average Play Menu :)")
-
+    pygame.display.set_caption("Your Professional Loading Menu")
 
     # Font setup
     font = pygame.font.Font(None, FONT_SIZE)
-    particles = []
-    clock = pygame.time.Clock()
-    button_rect = pygame.Rect((SCREEN_WIDTH - BUTTON_WIDTH) // 2, (SCREEN_HEIGHT - BUTTON_HEIGHT) // 2, BUTTON_WIDTH, BUTTON_HEIGHT)
-    running = True
+
+    # Animation variables
     tick = 0
-    smoothing_factor = 0.1
+    particles = []
+    button_color = BUTTON_COLOR
+
+    # Load and animate the logo/icon
+    logo_image = pygame.image.load('assets/icon/logo.png')
+    logo_rect = logo_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+
+    # Main loop
+    running = True
+    clock = pygame.time.Clock()
     
-    
-    random_color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-    inButton = False
-    anim1 = 0
-    
-    
+    button_rect = pygame.Rect((SCREEN_WIDTH - BUTTON_WIDTH) // 2, (SCREEN_HEIGHT - BUTTON_HEIGHT) // 2, BUTTON_WIDTH, BUTTON_HEIGHT)
+
     while running:
-        tick += 1
-        if anim1 <= -100:
-            anim1 += 1
-        elif anim1 >= 100:
-            anim1 -= 1
-        screen.fill(COLOR.BLACK)
-
-        # Mouse position and button hover effect
-        mouse_pos = pygame.mouse.get_pos()
-        
-        
-        if random.random() < 0.5:
-            
-            last_particle_pos = pygame.Vector2(mouse_pos)
-
-            offset_x = lerp(last_particle_pos[0], mouse_pos[0], smoothing_factor)
-            offset_y = lerp(last_particle_pos[1], mouse_pos[1], smoothing_factor)
-            offset_pos = (offset_x, offset_y)
-
-            particles.append(engine.Particle(offset_pos, (random.uniform(-1, 1), random.uniform(-1, 1)), 5, (255, 255, 255)))
-
-    
-        for particle in particles[:]:
-            particle.update()
-            particle.draw(screen)
-            if not particle.is_alive():
-                particles.remove(particle)
-                
-        if tick % 2 == 0:     
-            tick = 0
-            for _ in range(2):  # Example number of particles
-                velocity = (random.uniform(-2, 2), random.uniform(-2, 2))
-                
-                size = random.uniform(10, 20)
-                color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-                particles.append(engine.Particle((random.randint(0, SCREEN_WIDTH), (random.randint(0, SCREEN_HEIGHT))), velocity, size, color))
-        
-        if not inButton:
-            button_color = new_random_color()
-            
-        if button_rect.collidepoint(mouse_pos):
-            button_color = (40,255,80)
-            inButton = True
-        else:
-            inButton = False
-            button_color = random_color
-
-        # Draw button
-        draw_button(screen, button_color, button_rect, "Play", font, TEXT_COLOR )
-
         # Event handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if button_rect.collidepoint(mouse_pos):
-                    # Run the main script
+                if button_rect.collidepoint(event.pos):
                     pygame.quit()
-                    main()
+                    main()  # Replace with your main function or game loop
                     return
-                    
-        clock.tick(FPS)
+
+        # Update particles
+        tick += 1
+        screen.fill((40,40, 40))
+
+        # Draw particles
+        for particle in particles[:]:
+            particle.update()
+            particle.draw(screen)
+            if not particle.is_alive():
+                particles.remove(particle)
+
+        # Generate new particles periodically
+        if tick % 2 == 0:
+            for _ in range(2):  # Example number of particles
+                velocity = (random.uniform(-2, 2), random.uniform(-2, 2))
+                size = random.uniform(10, 20)
+                color = new_random_color()
+                particles.append(engine.Particle((random.randint(0, SCREEN_WIDTH), (random.randint(0, SCREEN_HEIGHT))), velocity, size, color))
+
+        # Update button hover effect
+        mouse_pos = pygame.mouse.get_pos()
+        if button_rect.collidepoint(mouse_pos):
+            button_color = BUTTON_HOVER_COLOR
+        else:
+            button_color = BUTTON_COLOR
+
+        # Draw button
+        draw_button(screen, button_color, button_rect, "Play", font, TEXT_COLOR)
+
+        # Animate logo/icon scaling and movement
         
-        
-                    
-        
+
+        # Draw logo/icon
+        screen.blit(logo_image, (10,10))
+
+        # Draw title
+        title_surf = font.render("Loading Menu", True, TEXT_COLOR)
+        title_rect = title_surf.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+        screen.blit(title_surf, title_rect)
+
         pygame.display.flip()
+        clock.tick(FPS)
 
     pygame.quit()
-    
+
 if __name__ == "__main__":
     run()

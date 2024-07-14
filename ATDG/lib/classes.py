@@ -32,6 +32,8 @@ class Tower:
         self.max_cooldown = 30  # Maximum cooldown frames
         self._tower_size = 20
         
+        self.speed = 10
+        
         self.max_level = 0
         
         
@@ -51,6 +53,9 @@ class Tower:
         
         
         self.kills = 0
+        
+    def update(self):
+        return
 
     def draw(self, screen):
         # Calculate the center position based on the image dimensions
@@ -67,13 +72,15 @@ class Tower:
         self.onHover(screen)
 
 
-    def upgrade(self, player_money):
+    def upgrade(self, player):
         
         if self.level > 2:
             return
         self.damage += 10
         self.range += 20
         self.attack_speed += 0.5  # Increase attack speed on upgrade
+        
+        self.speed += 5
         
         
         try:
@@ -85,7 +92,7 @@ class Tower:
                 self.max_level = self.level - 1
             self.image = engine.Image().LoadImage(f"turret_top_{self.max_level}")
             self.original_image = self.image.copy()
-        player_money -= self.get_next_level_price()
+        player.money -= self.get_next_level_price()
         self.level += 1
         engine.Sound().PlayFX("turret_upgrade")
             
@@ -114,7 +121,7 @@ class Tower:
                 self.cooldown = self.max_cooldown  # Reset cooldown
                 self.rotate_towards_target((enemy.x, enemy.y))
                 engine.Sound().PlayFX(f"turret_shoot_{self.level}")
-                return Bullet(self.x, self.y, enemy, self.damage)
+                return Bullet(self.x, self.y, enemy, self.damage, speed=self.speed)
 
         return None
     
@@ -128,19 +135,131 @@ class Tower:
             
             engine.draw_text_center(screen,f"Cost: {self.get_next_level_price()}" , mouse_pos, 15)
             
+class Missile:
+    def __init__(self, x, y, id):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.position = (x, y)
+        self.range = 300
+        self.damage = 80
+        self.level = 1
+        self.attack_speed = 0.1  # Lower is slower
+        self.cooldown = 0  # Cooldown counter
+        self.max_cooldown = 30  # Maximum cooldown frames
+        self._tower_size = 20
+        
+        self.speed = 4
+
+        self.max_level = 0
+
+        # Assets
+        self.frames = ["missle_0","missle_1", "missle_2", "missle_3", "missle_4", "missle_5", "missle_open"]
+        self.animation = engine.Image().LoadAnimation(self.frames)
+
+        self.image = self.animation[0]  # Initial image from animation frames
+        self.rect = self.image.get_rect(center=self.position)
+        self.original_image = self.image
+        self.position = self.position
+        self.angle = 0
+
+        self.kills = 0
+        self.shooting_animation_index = 0
+        self.is_shooting = False
+
+    def draw(self, screen):
+        # Calculate the center position based on the image dimensions
+        image_rect = self.rect
+        center_x = self.x - image_rect.width // 2
+        center_y = self.y - image_rect.height // 2
+
+        # Blit the image to the screen centered at (center_x, center_y)
+        screen.blit(self.image, (center_x, center_y))
+
+        # Call additional drawing methods or effects here
+        self.onHover(screen)
+
+    def update_shooting_animation(self):
+        if self.is_shooting:
+            
+            if self.shooting_animation_index >= len(self.frames)-1:
+                self.is_shooting = False
+            else:
+                self.shooting_animation_index += 1
+            
+        else:
+            if self.shooting_animation_index >= 1:
+                self.shooting_animation_index -= 1
+        self.image = self.animation[self.shooting_animation_index]
+            
+
+    def upgrade(self, player):
+        if self.level > 2:
+            return
+        self.damage += 100
+        self.range += 200
+        self.attack_speed += 0.1  # Increase attack speed on upgrade
+        
+        self.speed = 5
+
+        
+        player.money -= self.get_next_level_price()
+        self.level += 1
+        engine.Sound().PlayFX("missle_upgrade")
+
+    def get_next_level_price(self):
+        return 600 * self.level * (self.level + 1)  # Formula for calculating upgrade cost
+
+    def can_upgrade(self):
+        return False if self.level >= 5 else True
+
+
+    def attack(self, enemies):
+        if self.cooldown > 0:
+            self.cooldown -= self.attack_speed
+            return None
+
+        for enemy in enemies:
+            if (enemy.x - self.x) ** 2 + (enemy.y - self.y) ** 2 < self.range ** 2 and not enemy.Targeted:
+                self.cooldown = self.max_cooldown  # Reset cooldown
+                engine.Sound().PlayFX(f"missle_shoot")
+                self.is_shooting = True
+                self.update_shooting_animation()
+                enemy.Targeted = True
+                return Bullet(self.x, self.y, enemy, self.damage, trail=True, speed=self.speed)
+
+        return None
+
+    def onHover(self, screen):
+        range_rect = pygame.Rect(self.x - self._tower_size, self.y - self._tower_size,
+                                 self._tower_size * 2, self._tower_size * 2)
+
+        mouse_pos = engine.get_mouse_pos()
+        if engine.Check().point_inside_rect(mouse_pos, range_rect):
+            pygame.draw.circle(screen, COLOR.BLACK, (self.x, self.y), self.range, 1)  # Draw in black if mouse inside
+
+            engine.draw_text_center(screen, f"Cost: {self.get_next_level_price()}", mouse_pos, 15)
+
+    def update(self):
+        self.update_shooting_animation()
+
+    
+            
     
         
 
         
 
 class Bullet:
-    def __init__(self, x, y, target, damage):
+    def __init__(self, x, y, target, damage, trail=False, speed=5):
         self.x = x
         self.y = y
         self.position = (x,y)
         self.target = target
         self.damage = damage
-        self.speed = 5
+        self.speed = speed
+        self.trail = trail
+        self.particles = []
 
     def move(self):
         target_x, target_y = self.target.x, self.target.y
@@ -151,10 +270,23 @@ class Bullet:
             self.y += self.speed * dy / dist
 
     def draw(self, screen):
+        if self.trail:
+            engine.Particle
+            for particle in self.particles[:]:
+                particle.update()
+                particle.draw(screen)
+                if not particle.is_alive():
+                    self.particles.remove(particle)
+        velocity = (random.random(),random.random())
+        size = 5
+        color = COLOR.RED
+        self.particles.append(engine.Particle((self.x,self.y), velocity, size, color))
         pygame.draw.circle(screen, COLOR.BLACK, (int(self.x), int(self.y)), 5)
 
 
 
+                    
+                    
 class Enemy:
     def __init__(self, path, level):
         
@@ -188,6 +320,8 @@ class Enemy:
         self.max_health = properties["health"]
         self.speed = properties["speed"]
         self.color = properties["color"]
+        
+        self.Targeted = False
 
     def move(self):
         if self.path_index < len(self.path) - 1:
