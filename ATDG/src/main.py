@@ -18,17 +18,11 @@ SCREEN_HEIGHT = 600
 
 
 # Initialize Pygame
-pygame.init()
+
 engine.__init__((SCREEN_WIDTH,SCREEN_HEIGHT))
 
 
 
-# Screen dimensions
-
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Your Average Tower Defence Game")
-
-Player_Class = User()
 
 
 
@@ -95,20 +89,28 @@ def find_path(tile_map, tile_size) -> list[tuple[int, int]]:
 
 
 
-MESSAGE = None
-
-GUIdebug = engine.GUIdebug(SCREEN)
-
-
-
-
-
-MapImage = engine.Image().LoadImage("map")
 
 
 # Game loop
 def main():
     global DEBUG
+    # Screen dimensions
+    pygame.init()
+    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Your Average Tower Defence Game")
+
+    Player_Class = User()
+
+    MESSAGE = None
+
+    GUIdebug = engine.GUIdebug(SCREEN)
+
+
+
+
+
+    MapImage = engine.Image().LoadImage("map")
+    
     clock = pygame.time.Clock()
     running = True
     tiles = [game.Tile(x, y, TILE_MAP[y][x]) for y in range(len(TILE_MAP)) for x in range(len(TILE_MAP[0]))]
@@ -306,5 +308,120 @@ def is_on_path(x, y):
     return False
 
 
+
+
+
+def draw_button(screen, color, rect, text, font, text_color):
+    pygame.draw.rect(screen, color, rect)
+    text_surface = font.render(text, True, text_color)
+    text_rect = text_surface.get_rect(center=rect.center)
+    screen.blit(text_surface, text_rect)
+    
+def new_random_color():
+    return (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+def lerp(a, b, t):
+    return a + (b - a) * t
+def run():
+    pygame.init()
+
+    # Constants
+    SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
+    BUTTON_WIDTH, BUTTON_HEIGHT = 200, 80
+    BUTTON_COLOR = (100, 200, 100)
+    BUTTON_HOVER_COLOR = (150, 250, 150)
+    TEXT_COLOR = (0, 0, 0)
+    FONT_SIZE = 36
+
+    # Screen setup
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Your Average Play Menu :)")
+
+
+    # Font setup
+    font = pygame.font.Font(None, FONT_SIZE)
+    particles = []
+    clock = pygame.time.Clock()
+    button_rect = pygame.Rect((SCREEN_WIDTH - BUTTON_WIDTH) // 2, (SCREEN_HEIGHT - BUTTON_HEIGHT) // 2, BUTTON_WIDTH, BUTTON_HEIGHT)
+    running = True
+    tick = 0
+    smoothing_factor = 0.1
+    
+    
+    random_color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+    inButton = False
+    anim1 = 0
+    
+    
+    while running:
+        tick += 1
+        if anim1 <= -100:
+            anim1 += 1
+        elif anim1 >= 100:
+            anim1 -= 1
+        screen.fill(COLOR.BLACK)
+
+        # Mouse position and button hover effect
+        mouse_pos = pygame.mouse.get_pos()
+        
+        
+        if random.random() < 0.5:
+            
+            last_particle_pos = pygame.Vector2(mouse_pos)
+
+            offset_x = lerp(last_particle_pos[0], mouse_pos[0], smoothing_factor)
+            offset_y = lerp(last_particle_pos[1], mouse_pos[1], smoothing_factor)
+            offset_pos = (offset_x, offset_y)
+
+            particles.append(engine.Particle(offset_pos, (random.uniform(-1, 1), random.uniform(-1, 1)), 5, (255, 255, 255)))
+
+    
+        for particle in particles[:]:
+            particle.update()
+            particle.draw(screen)
+            if not particle.is_alive():
+                particles.remove(particle)
+                
+        if tick % 2 == 0:     
+            tick = 0
+            for _ in range(2):  # Example number of particles
+                velocity = (random.uniform(-2, 2), random.uniform(-2, 2))
+                
+                size = random.uniform(10, 20)
+                color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+                particles.append(engine.Particle((random.randint(0, SCREEN_WIDTH), (random.randint(0, SCREEN_HEIGHT))), velocity, size, color))
+        
+        if not inButton:
+            button_color = new_random_color()
+            
+        if button_rect.collidepoint(mouse_pos):
+            button_color = (40,255,80)
+            inButton = True
+        else:
+            inButton = False
+            button_color = random_color
+
+        # Draw button
+        draw_button(screen, button_color, button_rect, "Play", font, TEXT_COLOR )
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(mouse_pos):
+                    # Run the main script
+                    pygame.quit()
+                    main()
+                    return
+                    
+        clock.tick(FPS)
+        
+        
+                    
+        
+        pygame.display.flip()
+
+    pygame.quit()
+    
 if __name__ == "__main__":
-    main()
+    run()

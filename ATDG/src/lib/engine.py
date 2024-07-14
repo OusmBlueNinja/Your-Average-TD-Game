@@ -186,6 +186,13 @@ class Particle:
         # Check if the particle is still alive based on its age and lifetime
         return self.age < self.lifetime
     
+class Math:
+    def __init__(self):
+        pass
+    @staticmethod
+    def lerp(self, a, b, t):
+        return a + (b - a) * t
+    
     
 class Image:
     def LoadImage(self, ImageName):
@@ -281,3 +288,11 @@ class Sound:
             logger.error(f"Error playing random music: {e}")
         
     
+# TODO:
+# Make UI Elements
+
+#def draw_button(screen, color, rect, text):
+#    pygame.draw.rect(screen, color, rect)
+#    text_surface = font.render(text, True, TEXT_COLOR)
+#    text_rect = text_surface.get_rect(center=rect.center)
+#    screen.blit(text_surface, text_rect)
