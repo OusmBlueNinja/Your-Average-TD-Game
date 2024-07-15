@@ -97,9 +97,6 @@ def init(screen_size: tuple):
         
 
     
-def _show_confirmation_popup():
-    print("Confirmation")
-    return True
 
 def tick(screen):
     """Called Every Game Tick"""
@@ -304,6 +301,7 @@ def get_angle(point1: tuple, point2:tuple) -> float:
 class Sound:
     def __init__(self):
         self.current_sound = None  # Track the currently playing sound
+        self.stop_music = False
 
     def _load_sound(self, sound_name, type):
         # Try loading the sound with both .wav and .mp3 extensions
@@ -338,6 +336,8 @@ class Sound:
             logger.error(f"Error playing sound {sound_name}: {e}")
             
     def PlayMusicRandom(self, volume=0.5):
+        if self.stop_music:
+            return
         try:
             music_folder = "./assets/music"
             music_files = [f for f in os.listdir(music_folder) if f.endswith('.wav') or f.endswith('.mp3')]
@@ -359,6 +359,11 @@ class Sound:
             self.current_sound.play()
         except pygame.error as e:
             logger.error(f"Error playing random music: {e}")
+            
+    def set_music_status(self, status=True):
+        self.current_sound.stop()
+        self.stop_music = not status
+        
             
             
 
@@ -516,5 +521,105 @@ class UI:
             """Toggles the Button sellected state"""
             self.selected = not self.selected
             
+
+
+import pygame
+
+class Terminal:
+    def __init__(self, position, input=False, callback=None, history_rows=5):
+        self.position = position
+        self.surface = pygame.Surface((500, 200))
+        self.rect = pygame.Rect(position, (500, 200))
+        self.font = pygame.font.SysFont("Arial", 24)
+        self.input = input
+        self.text_input = ""
+        self.history = []
+        self.history_index = 0
+        self.active = False
+        self.callback = callback
+        self._cursor_blink_timer = 0
+        self._cursor_visible = True  
+        self.history_rows = history_rows
+        
+    def _split_string_at_index(self, input_string, index):
+        array1 = input_string[:index]
+        array2 = input_string[index:]
+        return array1, array2
+
+    def draw(self, screen,dt=0.01):
+        self.update_cursor(dt)
+        
+        # Draw background box
+        pygame.draw.rect(screen, (50, 50, 50), self.rect)
+        pygame.draw.rect(screen, (30, 30, 30), self.rect, 3)  # Outline
+        
+        # Draw text input area
+        input_area = pygame.Rect(self.position[0] + 10, self.position[1] + 10, self.rect.width - 20, 30)
+        pygame.draw.rect(screen, (100, 100, 100), input_area)
+        pygame.draw.rect(screen, (80, 80, 80), input_area, 2)  # Input area outline
+        
+        # Render text input
+        input_text = self.font.render(self.text_input, True, (255, 255, 255))
+        screen.blit(input_text, (input_area.x + 5, input_area.y + 5))
+        
+        # Draw cursor (blinking)
+        if self.active and self._cursor_visible:
+            cursor_x = input_area.x + 5 + input_text.get_width()
+            cursor_y = input_area.y + 5
+            pygame.draw.line(screen, (255, 255, 255), (cursor_x, cursor_y), (cursor_x, cursor_y + input_text.get_height()), 2)
+        
+        # Draw text area for history
+        text_area = pygame.Rect(self.position[0] + 10, self.position[1] + 50, self.rect.width - 20, self.rect.height - 60)
+        pygame.draw.rect(screen, (70, 70, 70), text_area)
+        pygame.draw.rect(screen, (50, 50, 50), text_area, 2)  # Text area outline
+        
+        # Render history lines
+        line_y = text_area.y + 5
+        for line in self.history[:self.history_rows]:  # Show last 10 lines
+            if len(line) >= 37:
+                line, overflow = self._split_string_at_index(line, 36)
+            line_text = self.font.render(line, True, (255, 255, 255))
+            screen.blit(line_text, (text_area.x + 5, line_y))
+            line_y += 25  # Adjust spacing between lines
+
+    def print_text(self, text:str) -> None:
+        """Prints text to the Terminal
+
+        Args:
+            text (str): text to print
+        """
+        self.history = [text] + self.history
+
+    def update(self, event):
+        if event.type == pygame.KEYDOWN:
+            if self.input:
+                if event.key == pygame.K_RETURN:
+                    # Execute command or add text to history
+                    self.history = [self.text_input] + self.history
+                    if self.callback:
+                        self.callback(self.text_input)
+                    self.text_input = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text_input = self.text_input[:-1]
+                else:
+                    self.text_input += event.unicode
+
+    def handle_events(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # Check if mouse clicked inside input area
+            if self.rect.collidepoint(event.pos):
+                self.active = True
+            else:
+                self.active = False
+        if self.active and event.type == pygame.KEYDOWN:
+            self.update(event)
+
+    def update_cursor(self, dt):
+        self._cursor_blink_timer += dt
+        if self._cursor_blink_timer >= 500:  # Blink every 500 milliseconds
+            self._cursor_visible = not self._cursor_visible
+            self._cursor_blink_timer = 0
+
+
 
 

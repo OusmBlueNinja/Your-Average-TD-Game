@@ -21,6 +21,7 @@ MapSize = (800,600)
 WOOD_BROWN = (97, 54, 19)
 
 Turet_Type = 1
+do_cheats = False
 
 
 
@@ -97,11 +98,12 @@ def find_path(tile_map, tile_size) -> list[tuple[int, int]]:
 
 
 
-
 # Game loop
 def main():
     
     engine.init((SCREEN_WIDTH,SCREEN_HEIGHT))
+    
+    
     
     UI = engine.UI()
     scroll_size = (200,SCREEN_HEIGHT)
@@ -146,6 +148,7 @@ def main():
 
     MapImage = engine.Image().LoadImage("map")
     
+    
     clock = pygame.time.Clock()
     running = True
     tiles = [game.Tile(x, y, TILE_MAP[y][x]) for y in range(len(TILE_MAP)) for x in range(len(TILE_MAP[0]))]
@@ -166,9 +169,46 @@ def main():
     coinImage = pygame.transform.smoothscale(coinImage, (40,40))
     
     down = False
+    DrawTerminal = False
     
     musicClass = engine.Sound()
     
+    def command_handler(command):
+        global do_cheats
+        if command.startswith("exit"):
+            sys.exit()
+        elif command.startswith("echo"):
+            command = command.split(" ")
+            Terminal.print_text(" ".join(command[1:]))
+        elif command.startswith("cheats_toggle"):
+            do_cheats = not do_cheats
+        elif command.startswith("money_give"):
+            if not do_cheats:
+                Terminal.print_text("Cheats not enabled, do cheats_toggle to enable cheats")
+                
+                return
+            command = command.split(" ")
+            Player_Class.money += int(command[1])
+            
+        elif command.startswith("setting"):
+            command = command.split(" ")
+            if command[1] == "music":
+                if command[2] == "on":
+                    Terminal.print_text("Turned music on")
+                    
+                    musicClass.set_music_status(True)
+                elif command[2] == "off":
+                    Terminal.print_text("Turned music off")
+                    
+                    musicClass.set_music_status(False)
+            
+        
+    
+            
+    Terminal = engine.Terminal((200,200), input=True, callback=command_handler)
+    
+    
+            
     
     
 
@@ -262,9 +302,16 @@ def main():
         # Handle events
         for event in pygame.event.get():
             UI.handle_event(event)
+            Terminal.handle_events(event)
             
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F1:
+                    Terminal.active = True
+                    DrawTerminal = not DrawTerminal
+                if event.key == pygame.K_F3:
+                    DEBUG = not DEBUG
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left click
                     if down:
@@ -274,6 +321,10 @@ def main():
                     
                     mouse_pos = engine.get_mouse_pos()
                     canPlace = True
+                    if DrawTerminal:
+                        if engine.Check().point_inside_rect( mouse_pos, Terminal.rect ):
+                            continue
+                    
                     for tower in towers:
                         if engine.Check().point_inside_rect( mouse_pos, tower.rect ):
                             
@@ -310,9 +361,7 @@ def main():
             
                     
                     
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_F3:
-                    DEBUG = not DEBUG
+                
         else:
             down = False
             
@@ -361,7 +410,23 @@ def main():
         UI.draw(SCREEN)
         SCREEN.blit(logoImage, (SCREEN_WIDTH-50,SCREEN_HEIGHT-50))
         
+        if DrawTerminal:
+            
+            Terminal.draw(SCREEN,dt)
+        else:
+            Terminal.active - False
+            
+            
+            
+            
+            
+            
+            
         engine.tick(SCREEN)
+        
+        
+        
+        # DONT PUT ANYTHING BELOW
         scaled_surface = pygame.transform.scale(SCREEN, (GAME_WIDTH, GAME_HEIGHT))
         
         
@@ -375,7 +440,7 @@ def main():
         
         
         musicClass.PlayMusicRandom(0.1)
-        clock.tick(FPS)
+        dt = clock.tick(FPS)
 
     pygame.quit()
 
