@@ -210,7 +210,6 @@ def main():
                         do_particles = True
                     elif command[2].lower() in ["off", "false", "0"]:
                         do_particles = False
-                    print(command,do_particles)
                     
                 except:
                     Terminal.print_text("Invalid boolean value for setting do_particles")
@@ -242,11 +241,6 @@ def main():
         for tower in towers:
             tower.draw(SCREEN)
             tower.update()
-            if DEBUG:
-                mouse_pos = engine.get_mouse_pos()
-                GUIdebug.drawDebugText(str(tower.kills), Text=f"Kills {tower.id}")
-                if engine.Check().point_inside_rect( mouse_pos, tower.rect ):
-                            GUIdebug.drawDebugText(str(tower.level), Text=f"level {str(tower.id)}")
             # Attack logic
             if len(enemies) > 0:
                 bullet = tower.attack(enemies, dt)
@@ -401,12 +395,13 @@ def main():
 
             GUIdebug.drawDebugText(f"{len(enemies)}", Text="Enemies")
             GUIdebug.drawDebugText(str(Player_Class.money), Text="Money")
-            GUIdebug.drawDebugText(str(Player_Class.kills), Text="Kills")
             
             for tower in towers[:]:
                 engine.draw_text_center(SCREEN, f"lvl:{tower.level}", (tower.position[0], tower.position[1]+30), 25)
                 
                 engine.draw_text_center(SCREEN, f"dmg:{tower.damage}", (tower.position[0], tower.position[1]+45), 25)
+                engine.draw_text_center(SCREEN, f"kills:{tower.kills}", (tower.position[0], tower.position[1]+60), 15)
+                engine.draw_text_center(SCREEN, f"id:{tower.id}", (tower.position[0], tower.position[1]+70), 15)
                 
                 
             
@@ -493,7 +488,6 @@ def lerp(a, b, t):
     return a + (b - a) * t
 def run():
     pygame.init()
-    
     SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
     BUTTON_WIDTH, BUTTON_HEIGHT = 200, 80
     BUTTON_COLOR = (100, 200, 100)
@@ -501,6 +495,8 @@ def run():
     TEXT_COLOR = (255, 255, 255)
     FONT_SIZE = 36
     FPS = 60
+
+    dt = 0
 
     # Screen setup
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -521,6 +517,7 @@ def run():
     # Main loop
     running = True
     clock = pygame.time.Clock()
+
     
     button_rect = pygame.Rect((SCREEN_WIDTH - BUTTON_WIDTH) // 2, (SCREEN_HEIGHT - BUTTON_HEIGHT) // 2, BUTTON_WIDTH, BUTTON_HEIGHT)
 
@@ -539,6 +536,8 @@ def run():
         tick += 1
         screen.fill((40,40, 40))
 
+        engine._delta_time = dt /10
+
         # Draw particles
         for particle in particles[:]:
             particle.update()
@@ -549,7 +548,7 @@ def run():
         # Generate new particles periodically
         if tick % 2 == 0:
             for _ in range(2):  # Example number of particles
-                velocity = (random.uniform(-2, 2), random.uniform(-2, 2))
+                velocity = (random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
                 size = random.uniform(10, 20)
                 color = new_random_color()
                 particles.append(engine.Particle((random.randint(0, SCREEN_WIDTH), (random.randint(0, SCREEN_HEIGHT))), velocity, size, color))
@@ -576,7 +575,8 @@ def run():
         screen.blit(title_surf, title_rect)
 
         pygame.display.flip()
-        clock.tick(FPS)
+        dt = clock.tick() /1000
+        
 
     pygame.quit()
 

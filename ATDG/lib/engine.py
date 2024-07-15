@@ -2,7 +2,7 @@ import pygame, time, math, datetime, os, sys, random
 
 pygame.font.init()
 
-version = "1.6.7"
+version = "1.6.8"
 
 _delta_time = 0
 
@@ -223,7 +223,7 @@ class Particle:
         self.position[1] += self.velocity[1] * (_delta_time+1)
 
         # Update age
-        self.age += 1
+        self.age += 1 * _delta_time
         self.size -= 0.01
 
         # Gradually decrease size as particle ages
@@ -243,7 +243,7 @@ class Math:
         super().__init__()
         pass
     @staticmethod
-    def lerp(self, a, b, t):
+    def lerp(a, b, t):
         return a + (b - a) * t
     
     
