@@ -136,7 +136,7 @@ class Tower:
             engine.draw_text_center(screen,f"Cost: {self.get_next_level_price()}" , mouse_pos, 15)
             
 class Missile:
-    def __init__(self, x, y, id):
+    def __init__(self, x, y, id, do_particles=True):
         self.id = id
         self.x = x
         self.y = y
@@ -148,6 +148,8 @@ class Missile:
         self.cooldown = 0  # Cooldown counter
         self.max_cooldown = 30  # Maximum cooldown frames
         self._tower_size = 20
+
+        self.do_particles = do_particles
         
         self.speed = 4
 
@@ -226,7 +228,7 @@ class Missile:
                 self.is_shooting = True
                 self.update_shooting_animation()
                 enemy.Targeted = True
-                return Bullet(self.x, self.y, enemy, self.damage, trail=True, speed=self.speed)
+                return Bullet(self.x, self.y, enemy, self.damage, trail=self.do_particles, speed=self.speed)
 
         return None
 
@@ -246,8 +248,23 @@ class Missile:
     
             
     
-        
+class TourchItem:
+    def __init__(self, position):
+        self.position = position
+        self.particles = []
+    def draw(self, screen, deltatime):
+        if 1:
+            pygame.draw.rect(screen, COLOR.BROWN, (self.position[0], self.position[1], 5,15))
 
+            for particle in self.particles[:]:
+                particle.update()
+                particle.draw(screen)
+                if not particle.is_alive():
+                    self.particles.remove(particle)
+            velocity = (random.uniform(-0.4,0.4),-1-random.uniform(-0.5,0.5))
+            size = random.uniform(3,5)
+            color = random.choice([COLOR.RED, COLOR.ORANGE, COLOR.YELLOW])
+            self.particles.append(engine.Particle((self.position[0]+3,self.position[1]), velocity, size, color))
         
 
 class Bullet:

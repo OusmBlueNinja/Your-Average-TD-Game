@@ -22,6 +22,7 @@ WOOD_BROWN = (97, 54, 19)
 
 Turet_Type = 1
 do_cheats = False
+do_particles = True
 
 
 
@@ -176,7 +177,7 @@ def main():
     musicClass = engine.Sound()
     
     def command_handler(command):
-        global do_cheats
+        global do_cheats, do_particles
         if command.startswith("exit"):
             sys.exit()
         elif command.startswith("echo"):
@@ -203,14 +204,23 @@ def main():
                     Terminal.print_text("Turned music off")
                     
                     musicClass.set_music_status(False)
-            
+            elif command[1] == "do_particles":
+                try:
+                    if command[2].lower() in ["on", "true", "1"]:
+                        do_particles = True
+                    elif command[2].lower() in ["off", "false", "0"]:
+                        do_particles = False
+                    print(command,do_particles)
+                    
+                except:
+                    Terminal.print_text("Invalid boolean value for setting do_particles")
         
     
             
     Terminal = engine.Terminal((200,200), input=True, callback=command_handler)
     
     
-            
+    tourch = game.TourchItem((400,400))  
     
     
 
@@ -271,11 +281,12 @@ def main():
                 Player_Class.health -= enemy.health
                 
                 enemies.remove(enemy)
-                for _ in range(20):  # Example number of particles
-                    velocity = (random.uniform(-6, 6), random.uniform(-6, 6))
-                    size = random.uniform(5, 15)
-                    color = COLOR.RED
-                    particles.append(engine.Particle(enemy.position, velocity, size, color))
+                if do_particles:
+                    for _ in range(20):  # Example number of particles
+                        velocity = (random.uniform(-6, 6), random.uniform(-6, 6))
+                        size = random.uniform(5, 15)
+                        color = COLOR.RED
+                        particles.append(engine.Particle(enemy.position, velocity, size, color))
                 engine.Sound().PlayFX("enemy_complete")
                 
                 break
@@ -290,11 +301,12 @@ def main():
                 Player_Class.money += enemy.max_health
             if enemy.health <= 0:
                 # Create explosion particles
-                for _ in range(20):  # Example number of particles
-                    velocity = (random.uniform(-3, 3), random.uniform(-3, 3))
-                    size = random.uniform(5, 10)
-                    color = COLOR.BLACK
-                    particles.append(engine.Particle(enemy.position, velocity, size, color))
+                if do_particles:
+                    for _ in range(20):  # Example number of particles
+                        velocity = (random.uniform(-3, 3), random.uniform(-3, 3))
+                        size = random.uniform(5, 10)
+                        color = COLOR.BLACK
+                        particles.append(engine.Particle(enemy.position, velocity, size, color))
                 # Remove enemy
                 for _ in range(enemy.max_health):
                     appendedMoney.append(1) 
@@ -348,7 +360,7 @@ def main():
                     if Turet_Type == 1:
                         towers.append(game.Tower(mouse_x, mouse_y, len(towers)))
                     elif Turet_Type == 2:        
-                        towers.append(game.Missile(mouse_x, mouse_y, len(towers)))
+                        towers.append(game.Missile(mouse_x, mouse_y, len(towers), do_particles=do_particles))
                             
                             #towers.append(game.Cannon(mouse_x, mouse_y, len(towers)))
                             
@@ -368,12 +380,12 @@ def main():
             down = False
             
         
-        
-        for particle in particles[:]:
-            particle.update()
-            particle.draw(SCREEN)
-            if not particle.is_alive():
-                particles.remove(particle)
+        if do_particles:
+            for particle in particles[:]:
+                particle.update()
+                particle.draw(SCREEN)
+                if not particle.is_alive():
+                    particles.remove(particle)
                     
         try:
             MESSAGE.update()
@@ -406,6 +418,9 @@ def main():
             SCREEN.blit(heartImage, (10,95))
             engine.draw_text_left(SCREEN, "     " + str(Player_Class.health), (10,100), 40)
 
+
+        if do_particles:
+            tourch.draw(SCREEN, dt)
         
         for doller in appendedMoney:
             Player_Class.money += doller
