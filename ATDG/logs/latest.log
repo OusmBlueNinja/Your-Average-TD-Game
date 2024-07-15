@@ -1,0 +1,16 @@
+[2024-07-15 12:38:18.385329] [INFO] Initializing screen size [ (1000, 600) ]
+[2024-07-15 12:38:18.387324] [INFO] Creating Engine Folder
+[2024-07-15 12:38:18.390364] [INFO] Loading Icon: logo.png
+[2024-07-15 12:38:18.392310] [INFO] Loading Icon: cursor.png
+[2024-07-15 12:38:18.394304] [INFO] Loading Image: menu_backround
+[2024-07-15 12:38:18.507019] [INFO] Loading Icon: logo.png
+[2024-07-15 12:38:18.509013] [INFO] Loading Image: wood_button
+[2024-07-15 12:38:18.515998] [INFO] Loading Image: wood_button
+[2024-07-15 12:38:18.525974] [INFO] Loading Image: wood_button
+[2024-07-15 12:38:18.534946] [INFO] Loading Image: wood_button
+[2024-07-15 12:38:18.541929] [INFO] Loading Image: wood_button
+[2024-07-15 12:38:18.546912] [INFO] Loading Image: map
+[2024-07-15 12:38:18.636203] [INFO] Loading Image: heart
+[2024-07-15 12:38:18.640196] [INFO] Loading Image: skull
+[2024-07-15 12:38:18.643184] [INFO] Loading Image: coin
+[2024-07-15 12:38:18.776084] [INFO] Playeing Random song [ song1 ]
