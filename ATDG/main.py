@@ -159,6 +159,8 @@ def main():
     ticks = 0
     particles = []
     appendedMoney = []
+
+    dt = 0
     
     heartImage = engine.Image().LoadImage("heart")
     skullImage = engine.Image().LoadImage("skull")
@@ -215,7 +217,7 @@ def main():
     while running:
         
         # Check if it's time to spawn an enemy
-        if ticks >= SPAWN_SPEED:
+        if ticks >= (SPAWN_SPEED * (dt + 1)):
             ticks = 0
             enemies.append(game.Enemy(find_path(TILE_MAP, TILE_SIZE), random.randrange(1,13)))
             
@@ -237,12 +239,12 @@ def main():
                             GUIdebug.drawDebugText(str(tower.level), Text=f"level {str(tower.id)}")
             # Attack logic
             if len(enemies) > 0:
-                bullet = tower.attack(enemies)
+                bullet = tower.attack(enemies, dt)
                 if bullet:
                     bullets.append(bullet)
 
         for bullet in bullets[:]:
-            bullet.move()
+            bullet.move(dt)
             bullet.draw(SCREEN)
             
             if bullet.target.Targeted:
@@ -279,7 +281,7 @@ def main():
                 break
                 
                 
-            enemy.move()
+            enemy.move(dt)
             
             enemy.draw(SCREEN)
             if enemy.x > SCREEN_WIDTH:
@@ -383,6 +385,8 @@ def main():
         if DEBUG:
             GUIdebug.NewFrame()
             GUIdebug.drawDebugText("DEBUG MENU", False)
+            GUIdebug.drawDebugText(f"{int(clock.get_fps())}", Text="FPS")
+
             GUIdebug.drawDebugText(f"{len(enemies)}", Text="Enemies")
             GUIdebug.drawDebugText(str(Player_Class.money), Text="Money")
             GUIdebug.drawDebugText(str(Player_Class.kills), Text="Kills")
@@ -422,7 +426,7 @@ def main():
             
             
             
-        engine.tick(SCREEN)
+        engine.tick(SCREEN, dt)
         
         
         
@@ -440,7 +444,7 @@ def main():
         
         
         musicClass.PlayMusicRandom(0.1)
-        dt = clock.tick(FPS)
+        dt = clock.tick() / 1000.0
 
     pygame.quit()
 
@@ -496,7 +500,7 @@ def run():
     button_color = BUTTON_COLOR
 
     # Load and animate the logo/icon
-    logo_image = pygame.image.load('assets/icon/logo.png')
+    logo_image = pygame.image.load('./assets/icon/logo.png')
     logo_rect = logo_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
 
     # Main loop

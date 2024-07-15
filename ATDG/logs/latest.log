@@ -1,34 +1,21 @@
-[2024-07-14 22:24:31.179402] [INFO] Initializing screen size [ (1000, 600) ]
-[2024-07-14 22:24:31.179902] [INFO] Creating Engine Folder
-[2024-07-14 22:24:31.180402] [INFO] Loading Icon: logo.png
-[2024-07-14 22:24:31.180901] [INFO] Loading Icon: cursor.png
-[2024-07-14 22:24:31.180901] [INFO] Loading Image: menu_backround
-[2024-07-14 22:24:31.209963] [INFO] Loading Icon: logo.png
-[2024-07-14 22:24:31.210464] [INFO] Loading Image: wood_button
-[2024-07-14 22:24:31.211463] [INFO] Loading Image: wood_button
-[2024-07-14 22:24:31.212977] [INFO] Loading Image: wood_button
-[2024-07-14 22:24:31.213975] [INFO] Loading Image: wood_button
-[2024-07-14 22:24:31.214977] [INFO] Loading Image: wood_button
-[2024-07-14 22:24:31.216488] [INFO] Loading Image: map
-[2024-07-14 22:24:31.225617] [INFO] Loading Image: heart
-[2024-07-14 22:24:31.226120] [INFO] Loading Image: skull
-[2024-07-14 22:24:31.226120] [INFO] Loading Image: coin
-[2024-07-14 22:24:31.244731] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:25:03.904538] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:05.433436] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:06.358752] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:07.396495] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:20.540564] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:21.358827] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:22.236452] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:23.196709] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:24.174049] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:25.022728] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:25:25.888312] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 22:26:49.157042] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:29:07.062859] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:31:25.014034] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:33:42.910533] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:36:00.828596] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:38:18.735739] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 22:40:36.634560] [INFO] Playeing Random song [ song1 ]
+[2024-07-15 11:35:26.021507] [INFO] Initializing screen size [ (1000, 600) ]
+[2024-07-15 11:35:26.022506] [INFO] Creating Engine Folder
+[2024-07-15 11:35:26.025536] [INFO] Loading Icon: logo.png
+[2024-07-15 11:35:26.028490] [INFO] Loading Icon: cursor.png
+[2024-07-15 11:35:26.030485] [INFO] Loading Image: menu_backround
+[2024-07-15 11:35:26.166566] [INFO] Loading Icon: logo.png
+[2024-07-15 11:35:26.169560] [INFO] Loading Image: wood_button
+[2024-07-15 11:35:26.174544] [INFO] Loading Image: wood_button
+[2024-07-15 11:35:26.179531] [INFO] Loading Image: wood_button
+[2024-07-15 11:35:26.186516] [INFO] Loading Image: wood_button
+[2024-07-15 11:35:26.191498] [INFO] Loading Image: wood_button
+[2024-07-15 11:35:26.197484] [INFO] Loading Image: map
+[2024-07-15 11:35:26.269295] [INFO] Loading Image: heart
+[2024-07-15 11:35:26.272286] [INFO] Loading Image: skull
+[2024-07-15 11:35:26.275275] [INFO] Loading Image: coin
+[2024-07-15 11:35:26.383767] [INFO] Playeing Random song [ song1 ]
+[2024-07-15 11:35:41.681816] [INFO] Loading Image: turret_base
+[2024-07-15 11:35:41.683811] [INFO] Loading Image: turret_top_0
+[2024-07-15 11:35:51.919578] [INFO] Loading Image: turret_base
+[2024-07-15 11:35:51.921576] [INFO] Loading Image: turret_top_0
+[2024-07-15 11:36:12.151224] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']

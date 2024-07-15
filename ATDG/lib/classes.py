@@ -111,9 +111,9 @@ class Tower:
         self.image = pygame.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
-    def attack(self, enemies):
+    def attack(self, enemies, dt):
         if self.cooldown > 0:
-            self.cooldown -= self.attack_speed
+            self.cooldown -= self.attack_speed * ( dt +1 )
             return None
 
         for enemy in enemies:
@@ -214,9 +214,9 @@ class Missile:
         return False if self.level >= 5 else True
 
 
-    def attack(self, enemies):
+    def attack(self, enemies, dt):
         if self.cooldown > 0:
-            self.cooldown -= self.attack_speed
+            self.cooldown -= self.attack_speed * ( dt +1 )
             return None
 
         for enemy in enemies:
@@ -261,26 +261,25 @@ class Bullet:
         self.trail = trail
         self.particles = []
 
-    def move(self):
+    def move(self, dt):
         target_x, target_y = self.target.x, self.target.y
         dx, dy = target_x - self.x, target_y - self.y
         dist = math.sqrt(dx ** 2 + dy ** 2)
         if dist != 0:
-            self.x += self.speed * dx / dist
-            self.y += self.speed * dy / dist
+            self.x += (self.speed * (dt+1)) * dx / dist
+            self.y += (self.speed* (dt+1)) * dy / dist
 
     def draw(self, screen):
         if self.trail:
-            engine.Particle
             for particle in self.particles[:]:
                 particle.update()
                 particle.draw(screen)
                 if not particle.is_alive():
                     self.particles.remove(particle)
-        velocity = (random.random(),random.random())
-        size = 5
-        color = COLOR.RED
-        self.particles.append(engine.Particle((self.x,self.y), velocity, size, color))
+            velocity = (random.random(),random.random())
+            size = 5
+            color = COLOR.RED
+            self.particles.append(engine.Particle((self.x,self.y), velocity, size, color))
         pygame.draw.circle(screen, COLOR.BLACK, (int(self.x), int(self.y)), 5)
 
 
@@ -323,15 +322,15 @@ class Enemy:
         
         self.Targeted = False
 
-    def move(self):
+    def move(self, dt):
         if self.path_index < len(self.path) - 1:
             
             target_x, target_y = self.path[self.path_index + 1]
             dx, dy = target_x - self.x, target_y - self.y
             dist = math.sqrt(dx ** 2 + dy ** 2)
             if dist != 0:
-                self.x += min(self.speed, dist) * dx / dist
-                self.y += min(self.speed, dist) * dy / dist
+                self.x += (min(self.speed, dist)* (dt+1)) * dx / dist
+                self.y += (min(self.speed, dist) * (dt+1)) * dy / dist
 
             if dist < self.speed:
                 self.path_index += 1
