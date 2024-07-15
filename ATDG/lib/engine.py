@@ -51,11 +51,19 @@ class Logger:
 logger = Logger()
 
 
-def __init__(screen_size: tuple):
-    global _SCREEN_SIZE, _SCREEN_HEIGHT, _SCREEN_WIDTH
+
+
+def init(screen_size: tuple):
+    global _SCREEN_SIZE, _SCREEN_HEIGHT, _SCREEN_WIDTH, _CURSOR_ICON
     _SCREEN_SIZE = screen_size
-    
     _SCREEN_HEIGHT, _SCREEN_WIDTH = _SCREEN_SIZE
+    
+    
+    pygame.init()
+    
+    pygame.mouse.set_visible(False)
+    
+    
     
     print(f"OBEngine {version}")
     print(f"https://github.com/OusmBlueNinja/OBEngine")
@@ -70,15 +78,41 @@ def __init__(screen_size: tuple):
     os.makedirs("./assets/icon", exist_ok=True)
     
     icon_folder = "./assets/icon"
-    icon_file = [f for f in os.listdir(icon_folder) if f.endswith('.png')]
-    if not icon_file:
+    icons = [f for f in os.listdir(icon_folder) if f.endswith('.png')]
+    
+    
+    if not icons or "logo.png" not in icons:
+        print(icons)
         logger.warn("No Icon Found")
     else:
-        pygame.display.set_icon(Image().LoadIcon(icon_file[0]))
+        pygame.display.set_icon(Image().LoadIcon(icons[icons.index("logo.png")]))
+        
+        
+    if not icons or "cursor.png" not in icons:
+        print(icons)
+        logger.warn("No Cursor Found")
+        _CURSOR_ICON = None
+    else:
+        _CURSOR_ICON = Image().LoadIcon(icons[icons.index("cursor.png")])
         
 
     
+def _show_confirmation_popup():
+    print("Confirmation")
+    return True
+
+def tick(screen):
+    """Called Every Game Tick"""
+    # Draw Cursor
+    if _CURSOR_ICON:
+        screen.blit(_CURSOR_ICON, pygame.mouse.get_pos())
+    else:
+        
+        pygame.draw.line(screen, COLOR.WHITE, (pygame.mouse.get_pos()[0] - 10, pygame.mouse.get_pos()[1]), (pygame.mouse.get_pos()[0] + 10, pygame.mouse.get_pos()[1]), 2)
+        pygame.draw.line(screen, COLOR.WHITE, (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1] - 10), (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1] + 10), 2)
+        
     
+
 
 
 
@@ -128,10 +162,21 @@ class Check:
         x, y = point
         return rect.collidepoint(x, y)
     
-    
-def get_mouse_pos():
-    return pygame.mouse.get_pos()
 
+
+
+def middle_point(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    mx = ((x1 + x2) / 1.9)
+    my = ((y1 + y2) / 1.9)
+    return (mx, my)
+
+    
+def get_mouse_pos() -> tuple[int, int] :
+
+    # Get the mouse position
+    return pygame.mouse.get_pos()
 
 class GUIdebug:
     def __init__(self, screen):

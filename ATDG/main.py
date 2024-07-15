@@ -14,6 +14,8 @@ from lib.user import User
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 600
 
+GAME_WIDTH, GAME_HEIGHT = 1920,1080
+
 MapSize = (800,600)
 
 WOOD_BROWN = (97, 54, 19)
@@ -99,7 +101,7 @@ def find_path(tile_map, tile_size) -> list[tuple[int, int]]:
 # Game loop
 def main():
     
-    engine.__init__((SCREEN_WIDTH,SCREEN_HEIGHT))
+    engine.init((SCREEN_WIDTH,SCREEN_HEIGHT))
     
     UI = engine.UI()
     scroll_size = (200,SCREEN_HEIGHT)
@@ -107,7 +109,8 @@ def main():
     global DEBUG
     # Screen dimensions
     pygame.init()
-    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    SCREEN = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+    game_window = pygame.display.set_mode((GAME_WIDTH, GAME_HEIGHT))
     pygame.display.set_caption("Your Average Tower Defence Game")
 
     Player_Class = User()
@@ -267,7 +270,7 @@ def main():
                     if down:
                         continue
                     down = True
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    mouse_x, mouse_y = engine.get_mouse_pos()
                     
                     mouse_pos = engine.get_mouse_pos()
                     canPlace = True
@@ -358,8 +361,17 @@ def main():
         UI.draw(SCREEN)
         SCREEN.blit(logoImage, (SCREEN_WIDTH-50,SCREEN_HEIGHT-50))
         
-        pygame.display.update()
+        engine.tick(SCREEN)
+        scaled_surface = pygame.transform.scale(SCREEN, (GAME_WIDTH, GAME_HEIGHT))
+        
+        
+
+        # Blit the scaled surface to the display surface
+        game_window.blit(scaled_surface, (0, 0))
+        pygame.display.flip()
         ticks += 1
+        
+        
         
         
         musicClass.PlayMusicRandom(0.1)

@@ -1,21 +1,26 @@
-[2024-07-14 14:52:25.415967] [INFO] Initializing screen size [ (1000, 600) ]
-[2024-07-14 14:52:25.416467] [INFO] Creating Engine Folder
-[2024-07-14 14:52:25.417468] [INFO] Loading Icon: logo.png
-[2024-07-14 14:52:25.421488] [INFO] Loading Image: menu_backround
-[2024-07-14 14:52:25.502678] [INFO] Loading Icon: logo.png
-[2024-07-14 14:52:25.503179] [INFO] Loading Image: wood_button
-[2024-07-14 14:52:25.504679] [INFO] Loading Image: wood_button
-[2024-07-14 14:52:25.505678] [INFO] Loading Image: wood_button
-[2024-07-14 14:52:25.506678] [INFO] Loading Image: wood_button
-[2024-07-14 14:52:25.507679] [INFO] Loading Image: wood_button
-[2024-07-14 14:52:25.508677] [INFO] Loading Image: map
-[2024-07-14 14:52:25.517713] [INFO] Loading Image: heart
-[2024-07-14 14:52:25.518213] [INFO] Loading Image: skull
-[2024-07-14 14:52:25.518709] [INFO] Loading Image: coin
-[2024-07-14 14:52:25.531733] [INFO] Playeing Random song [ song1 ]
-[2024-07-14 14:52:35.481136] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
-[2024-07-14 14:52:42.136628] [INFO] Loading Image: turret_base
-[2024-07-14 14:52:42.137128] [INFO] Loading Image: turret_top_0
-[2024-07-14 14:52:44.094629] [INFO] Loading Image: turret_top_1
-[2024-07-14 14:52:44.095129] [INFO] Loading Image: turret_top_1
-[2024-07-14 14:54:46.423030] [INFO] Playeing Random song [ song1 ]
+[2024-07-14 19:45:37.464006] [INFO] Initializing screen size [ (1000, 600) ]
+[2024-07-14 19:45:37.465006] [INFO] Creating Engine Folder
+[2024-07-14 19:45:37.466011] [INFO] Loading Icon: logo.png
+[2024-07-14 19:45:37.466517] [INFO] Loading Icon: cursor.png
+[2024-07-14 19:45:37.466517] [INFO] Loading Image: menu_backround
+[2024-07-14 19:45:37.500609] [INFO] Loading Icon: logo.png
+[2024-07-14 19:45:37.501610] [INFO] Loading Image: wood_button
+[2024-07-14 19:45:37.502610] [INFO] Loading Image: wood_button
+[2024-07-14 19:45:37.504107] [INFO] Loading Image: wood_button
+[2024-07-14 19:45:37.505108] [INFO] Loading Image: wood_button
+[2024-07-14 19:45:37.506216] [INFO] Loading Image: wood_button
+[2024-07-14 19:45:37.507729] [INFO] Loading Image: map
+[2024-07-14 19:45:37.516760] [INFO] Loading Image: heart
+[2024-07-14 19:45:37.516760] [INFO] Loading Image: skull
+[2024-07-14 19:45:37.517764] [INFO] Loading Image: coin
+[2024-07-14 19:45:37.536805] [INFO] Playeing Random song [ song1 ]
+[2024-07-14 19:45:45.326201] [INFO] Loading Animation Frames: ['missle_0', 'missle_1', 'missle_2', 'missle_3', 'missle_4', 'missle_5', 'missle_open']
+[2024-07-14 19:45:48.580186] [INFO] Loading Image: turret_base
+[2024-07-14 19:45:48.580686] [INFO] Loading Image: turret_top_0
+[2024-07-14 19:46:39.832878] [INFO] Loading Image: turret_top_1
+[2024-07-14 19:46:39.832878] [INFO] Loading Image: turret_top_1
+[2024-07-14 19:46:42.284936] [INFO] Loading Image: turret_base
+[2024-07-14 19:46:42.284936] [INFO] Loading Image: turret_top_0
+[2024-07-14 19:46:42.583960] [INFO] Loading Image: turret_top_1
+[2024-07-14 19:46:42.584459] [INFO] Loading Image: turret_top_1
+[2024-07-14 19:47:55.460538] [INFO] Playeing Random song [ song1 ]
