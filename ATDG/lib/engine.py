@@ -546,8 +546,8 @@ class Terminal:
         array2 = input_string[index:]
         return array1, array2
 
-    def draw(self, screen,dt=0.01):
-        self.update_cursor(dt)
+    def draw(self, screen,deltatime=0.01):
+        self.update_cursor(deltatime)
         
         # Draw background box
         pygame.draw.rect(screen, (50, 50, 50), self.rect)
@@ -614,8 +614,8 @@ class Terminal:
         if self.active and event.type == pygame.KEYDOWN:
             self.update(event)
 
-    def update_cursor(self, dt):
-        self._cursor_blink_timer += dt
+    def update_cursor(self, deltatime):
+        self._cursor_blink_timer += deltatime
         if self._cursor_blink_timer >= 500:  # Blink every 500 milliseconds
             self._cursor_visible = not self._cursor_visible
             self._cursor_blink_timer = 0
