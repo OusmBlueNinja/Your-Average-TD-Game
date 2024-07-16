@@ -2,7 +2,7 @@ import pygame, time, math, datetime, os, sys, random
 
 pygame.font.init()
 
-version = "1.6.8"
+version = "1.7.1"
 
 _delta_time = 0
 
@@ -247,6 +247,75 @@ class Math:
         return a + (b - a) * t
     
     
+
+class AnimationPlayer:
+    """Load an animation from a list of image files
+        ## Example
+        
+        ### Initialize Animation
+        ```cpp
+        
+        frames = ["frame1", "frame2", "frame3"]
+        Animation_1 = engine.Image().LoadAnimation(frames)
+        AnimPlayer = engine.AnimationPlayer(Animation_1, sequence=[0,1,2,1,0])
+        
+        ```
+        ### Game Loop
+        
+        ```cpp
+        // call every frame
+        AnimPlayer.update()
+        // start animation 
+        AnimPlayer.play()
+        // draw animation
+        AnimPlayer.draw(screen)
+        
+        ```
+        
+        """
+    def __init__(self, frames:list[pygame.Surface], sequence:list[int]=[None], speed:float|int=1):
+        self.frames = frames
+        self.frame = frames[0]
+        self.frame_order = sequence
+        self.frame_number = 0
+        self.speed = speed
+        self.playing = False
+        if sequence == [None]:
+            self.frame_order = list(range(len(frames)))
+        pass
+    
+    def update(self) -> None:
+        if self.playing:
+            
+            if self.frame_number <= len(self.frame_order)-1:
+                
+                    
+                self.frame = self.frames[self.frame_order[round(self.frame_number)]]
+                self.frame_number += self.speed
+                
+            else:
+                self.playing = False
+        else:
+            self.frame_number = 0
+            
+            
+            
+            
+    def play(self):
+        self.playing = True
+        self.frame_number = 0
+            
+            
+    def draw(self, screen:pygame.Surface, pos=(0,0), size=(40,40)):
+        if self.playing:
+            screen.blit(self.frame, (pos[0], pos[1], size[0], size[1]))
+        
+            
+            
+            
+    
+    
+    
 class Image:
     def LoadImage(self, ImageName:str) -> pygame.Surface:
         try:
@@ -266,8 +335,29 @@ class Image:
             logger.error(("Error:", message))
             return None
         
-    def LoadAnimation(self, ImageNames: list[str]) -> list[pygame.Surface]:
-        """Load an animation from a list of image files"""
+    def LoadAnimation(self, ImageNames: list[str]) ->  list[pygame.Surface]:
+        """Load an animation from a list of image files
+        ## Example
+        
+        ### Initialize Animation
+        ```cpp
+        
+        frames = ["frame1", "frame2", "frame3"]
+        Animation_1 = engine.Image().LoadAnimation(frames)
+        AnimPlayer = engine.AnimationPlayer(Animation_1, sequence=[0,1,2,1,0])
+        
+        ```
+        ### Game Loop
+        
+        ```cpp
+        // call every frame
+        AnimPlayer.update()
+        // start animation 
+        AnimPlayer.play()
+        
+        ```
+        
+        """
         images = []
         
         logger.log(f"Loading Animation Frames: %s" % ImageNames)
@@ -279,6 +369,7 @@ class Image:
                 logger.error(("Error:", message))
                 return None
         return images
+    
     
     
     ## TODO
